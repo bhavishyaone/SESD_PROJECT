@@ -40,8 +40,6 @@ The system is designed to ensure clarity, maintainability, and scalability while
 
 ## 4. Project Scope
 
-### 4.1 In Scope
-
 The project will include the following core functionalities:
 
 - User registration and authentication
@@ -53,15 +51,6 @@ The project will include the following core functionalities:
 - Grading and performance tracking
 - Course progress monitoring
 - Certificate generation upon course completion
-
-### 4.2 Out of Scope
-
-To maintain project focus and manageable complexity, the following features are excluded:
-
-- Live video streaming integration
-- Payment gateway integration
-- Third-party LMS integrations
-- AI-based content recommendations
 
 ---
 
