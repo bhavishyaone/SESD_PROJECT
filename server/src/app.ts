@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 
 class App {
@@ -22,7 +22,7 @@ class App {
   }
 
   private initializeRoutes() {
-    this.app.get('/', (req, res) => {
+    this.app.get('/', (req: Request, res: Response) => {
       res.status(200).json({ message: 'Welcome to LMS API' });
     });
   }
