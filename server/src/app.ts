@@ -1,4 +1,5 @@
 import express, { Application } from 'express';
+import cors from 'cors';
 
 class App {
   public app: Application;
@@ -10,7 +11,14 @@ class App {
     this.env = process.env.NODE_ENV || 'development';
     this.port = process.env.PORT || 5000;
 
+    this.initializeMiddlewares();
     this.initializeRoutes();
+  }
+
+  private initializeMiddlewares() {
+    this.app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
   }
 
   private initializeRoutes() {
@@ -21,10 +29,8 @@ class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.log(`=================================`);
-      console.log(`======= ENV: ${this.env} =======`);
-      console.log(`🚀 App listening on the port ${this.port}`);
-      console.log(`=================================`);
+    console.log(` App listening on the port ${this.port}`);
+
     });
   }
 }
