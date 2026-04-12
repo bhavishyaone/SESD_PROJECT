@@ -1,4 +1,4 @@
-import { Document, FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { Document, FilterQuery, Model, UpdateQuery, AnyKeys } from 'mongoose';
 
 export abstract class BaseRepository<T extends Document> {
   constructor(protected readonly model: Model<T>) {}
@@ -11,7 +11,7 @@ export abstract class BaseRepository<T extends Document> {
     return this.model.find(filter).exec();
   }
 
-  public async save(data: Partial<T>): Promise<T> {
+  public async save(data: AnyKeys<T>): Promise<T> {
     const document = new this.model(data);
     return document.save();
   }
