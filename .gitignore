@@ -18,10 +18,17 @@ out/
 # Environment variables
 # ========================
 .env
+**/.env
+.env.example
+**/.env.example
 .env.local
+**/.env.local
 .env.development
+**/.env.development
 .env.test
+**/.env.test
 .env.production
+**/.env.production
 
 # ========================
 # TypeScript
