@@ -3,6 +3,8 @@ import cors from 'cors';
 import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './routes/auth.routes';
 import courseRoutes from './routes/course.routes';
+import enrollmentRoutes from './routes/enrollment.routes';
+import assignmentRoutes from './routes/assignment.routes';
 
 class App {
   public app: Application;
@@ -28,6 +30,8 @@ class App {
   private initializeRoutes() {
     this.app.use('/api/auth', authRoutes);
     this.app.use('/api/courses', courseRoutes);
+    this.app.use('/api/enrollments', enrollmentRoutes);
+    this.app.use('/api/assignments', assignmentRoutes);
     this.app.get('/', (req: Request, res: Response) => {
       res.status(200).json({ message: 'Welcome to LMS API' });
     });
