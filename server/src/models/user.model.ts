@@ -15,7 +15,6 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-// Pre-save hook for password hashing
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   try {
@@ -27,7 +26,6 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-// Compare password method
 userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password as string);
 };

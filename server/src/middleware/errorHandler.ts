@@ -8,15 +8,15 @@ export const errorHandler = (err: Error | ApiError, req: Request, res: Response,
   if (err instanceof ApiError) {
     statusCode = err.statusCode;
     message = err.message;
+  } else {
+    console.error("Unhandled Error:", err);
   }
 
-  // Handle Mongoose specific validation errors
   if (err.name === 'ValidationError') {
     statusCode = 400;
     message = err.message;
   }
 
-  // Handle Mongoose duplicate key errors
   if ((err as any).code === 11000) {
     statusCode = 409;
     message = 'Duplicate field value entered.';
@@ -26,6 +26,7 @@ export const errorHandler = (err: Error | ApiError, req: Request, res: Response,
     status: 'error',
     statusCode,
     message,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    errMessage: err.message,
+    stack: err.stack
   });
 };

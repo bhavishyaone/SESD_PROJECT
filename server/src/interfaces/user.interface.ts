@@ -17,13 +17,10 @@ export interface IUser extends Document {
 }
 
 export interface IStudent extends IUser {
-  // specific student fields
 }
 
 export interface IInstructor extends IUser {
-  // specific instructor fields
 }
 
 export interface IAdmin extends IUser {
-  // specific admin fields
 }

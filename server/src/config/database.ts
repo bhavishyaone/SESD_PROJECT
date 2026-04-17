@@ -22,11 +22,11 @@ class Database {
       try {
         console.log(`Connecting to MongoDB... (Attempt ${retries + 1}/${this.MAX_RETRIES})`);
         await mongoose.connect(uri);
-        console.log('✅ Successfully connected to MongoDB');
+        console.log('Successfully connected to MongoDB');
         return;
       } catch (error) {
         retries++;
-        console.error(`❌ MongoDB connection failed: ${(error as Error).message}`);
+        console.error(`MongoDB connection failed: ${(error as Error).message}`);
         if (retries >= this.MAX_RETRIES) {
           console.error('Max connection retries reached. Exiting...');
           process.exit(1);

@@ -20,10 +20,8 @@ export class AuthService {
       userData.role = UserRole.STUDENT;
     }
 
-    // Save triggers the pre-save password hash
     const newUser = await this.userRepository.save(userData);
     
-    // Remove password before returning
     const userObj = newUser.toObject();
     delete userObj.password;
 
