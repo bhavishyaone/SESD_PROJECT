@@ -24,7 +24,10 @@ export class GradingService {
     }
 
     const calculatedScore = strategy.calculate({ marks }, maxMarks);
-    
-    return this.submissionRepository.update(submissionId, { marks: calculatedScore, status: 'graded' } as any);
+    const updated = await this.submissionRepository.update(submissionId, { marks: calculatedScore, status: 'graded' } as any);
+    if (!updated) {
+      throw new ApiError(500, 'Failed to update submission');
+    }
+    return updated;
   }
 }
