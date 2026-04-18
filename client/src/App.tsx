@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
+import Login from './pages/Login';
+import Register from './pages/Register';
+
 // Placeholder Pages - Will be implemented in subsequent phases
-const Login = () => <div className="p-8"><h1>Login Page</h1></div>;
-const Register = () => <div className="p-8"><h1>Register Page</h1></div>;
 const Dashboard = () => <div className="p-8"><h1>Dashboard</h1></div>;
 const CourseCatalog = () => <div className="p-8"><h1>Course Catalog</h1></div>;
 
