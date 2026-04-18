@@ -1,5 +1,5 @@
 import { CourseRepository } from '../repositories/course.repository';
-import { ICourse } from '../interfaces/course.interface';
+import { ICourse, IModule, ILesson } from '../interfaces/course.interface';
 import ApiError from '../utils/ApiError';
 
 import { ModuleRepository } from '../repositories/module.repository';
