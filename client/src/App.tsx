@@ -11,6 +11,12 @@ import Dashboard from './pages/Dashboard';
 import CourseCatalog from './pages/CourseCatalog';
 import LearningPlayer from './pages/LearningPlayer';
 
+// New Features Imports
+import MyEnrollments from './pages/MyEnrollments';
+import MyCertificates from './pages/MyCertificates';
+import CourseBuilder from './pages/CourseBuilder';
+import ManageAssignments from './pages/ManageAssignments';
+
 const App: React.FC = () => {
   return (
     <AuthProvider>
@@ -26,7 +32,15 @@ const App: React.FC = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/courses" element={<CourseCatalog />} />
               <Route path="/course/:id/play" element={<LearningPlayer />} />
-              <Route path="/enrollments" element={<div className="p-4">My Enrollments</div>} />
+              
+              {/* Student Features */}
+              <Route path="/enrollments" element={<MyEnrollments />} />
+              <Route path="/certificates" element={<MyCertificates />} />
+              
+              {/* Instructor Features */}
+              <Route path="/courses/new" element={<CourseBuilder />} />
+              <Route path="/manage-assignments" element={<ManageAssignments />} />
+
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
             </Route>
           </Route>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, BookOpen, GraduationCap, LogOut, FileText } from 'lucide-react';
+import { LayoutDashboard, BookOpen, GraduationCap, LogOut, FileText, Award } from 'lucide-react';
 
 const DashboardLayout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -16,9 +16,10 @@ const DashboardLayout: React.FC = () => {
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
     { name: 'Courses', path: '/courses', icon: <BookOpen size={20} /> },
-    // Show 'My Enrollments' to students, and 'Assignments' to instructors
+    // Show 'My Enrollments' and Certificates to students
     ...(user?.role === 'Student' ? [
-      { name: 'Enrollments', path: '/enrollments', icon: <GraduationCap size={20} /> }
+      { name: 'Enrollments', path: '/enrollments', icon: <GraduationCap size={20} /> },
+      { name: 'Certificates', path: '/certificates', icon: <Award size={20} /> }
     ] : [
       { name: 'Manage Assignments', path: '/manage-assignments', icon: <FileText size={20} /> }
     ])

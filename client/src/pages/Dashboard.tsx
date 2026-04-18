@@ -46,9 +46,20 @@ const Dashboard: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      <div>
-        <h1 style={{ marginBottom: '0.5rem' }}>Overview</h1>
-        <p style={{ color: 'hsl(var(--text-muted))' }}>Track your active academic standing and performance.</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1 style={{ marginBottom: '0.5rem' }}>Overview</h1>
+          <p style={{ color: 'hsl(var(--text-muted))' }}>Track your active academic standing and performance.</p>
+        </div>
+        
+        {user?.role === 'Instructor' && (
+          <button 
+            className="btn btn-primary" 
+            onClick={() => window.location.href = '/courses/new'}
+          >
+            + Create New Course
+          </button>
+        )}
       </div>
 
       {loading ? (
