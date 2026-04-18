@@ -9,6 +9,7 @@ import Register from './pages/Register';
 import DashboardLayout from './components/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import CourseCatalog from './pages/CourseCatalog';
+import LearningPlayer from './pages/LearningPlayer';
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/courses" element={<CourseCatalog />} />
+              <Route path="/course/:id/play" element={<LearningPlayer />} />
               <Route path="/enrollments" element={<div className="p-4">My Enrollments</div>} />
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
             </Route>
