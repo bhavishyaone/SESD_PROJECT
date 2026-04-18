@@ -15,7 +15,7 @@ const LearningPlayer: React.FC = () => {
   const [isCompleted, setIsCompleted] = useState(false);
 
   // In a real scenario, this would generate an assignment via /api/assignments based on course
-  const assignmentId = 'placeholder-assignment-id'; 
+  // const assignmentId = 'placeholder-assignment-id'; 
 
   const handleSubmitAssignment = async (e: React.FormEvent) => {
     e.preventDefault();
