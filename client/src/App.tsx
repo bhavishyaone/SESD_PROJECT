@@ -14,6 +14,7 @@ import LearningPlayer from './pages/LearningPlayer';
 import MyEnrollments from './pages/MyEnrollments';
 import MyCertificates from './pages/MyCertificates';
 import CourseBuilder from './pages/CourseBuilder';
+import ManageCourseContent from './pages/ManageCourseContent';
 import ManageAssignments from './pages/ManageAssignments';
 import LandingPage from './pages/LandingPage';
 
@@ -36,6 +37,7 @@ const App: React.FC = () => {
               <Route path="/certificates" element={<MyCertificates />} />
               
               <Route path="/courses/new" element={<CourseBuilder />} />
+              <Route path="/courses/:id/manage" element={<ManageCourseContent />} />
               <Route path="/manage-assignments" element={<ManageAssignments />} />
 
               <Route path="/" element={<Navigate to="/dashboard" replace />} />

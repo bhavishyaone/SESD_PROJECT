@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { BookOpen, Clock, Tag } from 'lucide-react';
 import api from '../api/axios';
 
@@ -14,6 +15,7 @@ interface Course {
 
 const CourseCatalog: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [enrollingMap, setEnrollingMap] = useState<Record<string, boolean>>({});
@@ -99,7 +101,7 @@ const CourseCatalog: React.FC = () => {
                 )}
                 
                 {user?.role === 'Instructor' && (
-                  <button className="btn btn-surface" style={{ width: '100%' }}>
+                  <button className="btn btn-surface" style={{ width: '100%' }} onClick={() => navigate(`/courses/${course._id}/manage`)}>
                     Manage Course
                   </button>
                 )}
