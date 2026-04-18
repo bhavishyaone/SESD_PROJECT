@@ -8,9 +8,7 @@ import Register from './pages/Register';
 
 import DashboardLayout from './components/DashboardLayout';
 import Dashboard from './pages/Dashboard';
-
-// Placeholder Pages - Will be implemented in subsequent phases
-const CourseCatalog = () => <div className="p-8"><h1>Course Catalog</h1></div>;
+import CourseCatalog from './pages/CourseCatalog';
 
 const App: React.FC = () => {
   return (
