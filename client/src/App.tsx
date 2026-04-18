@@ -16,6 +16,7 @@ import MyEnrollments from './pages/MyEnrollments';
 import MyCertificates from './pages/MyCertificates';
 import CourseBuilder from './pages/CourseBuilder';
 import ManageAssignments from './pages/ManageAssignments';
+import LandingPage from './pages/LandingPage';
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
