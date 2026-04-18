@@ -8,7 +8,6 @@ const LandingPage: React.FC = () => {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-background)', display: 'flex', flexDirection: 'column' }}>
       
-      {/* Dynamic Navbar */}
       <nav style={{ padding: '1.5rem 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid hsla(var(--color-border), 0.3)', backdropFilter: 'blur(10px)', position: 'sticky', top: 0, zIndex: 50 }}>
         <h2 style={{ background: 'linear-gradient(90deg, hsl(var(--color-primary)), hsl(var(--color-secondary)))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: 700, letterSpacing: '-0.05em' }}>
           SESD LMS
@@ -19,9 +18,7 @@ const LandingPage: React.FC = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section style={{ padding: '8rem 5% 6rem 5%', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        {/* Background glow effects */}
         <div style={{ position: 'absolute', top: '20%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', height: '600px', background: 'hsl(var(--color-primary))', opacity: 0.15, filter: 'blur(100px)', borderRadius: '50%', zIndex: 0, pointerEvents: 'none' }}></div>
         <div style={{ position: 'absolute', bottom: '-10%', right: '10%', width: '400px', height: '400px', background: 'hsl(var(--color-secondary))', opacity: 0.15, filter: 'blur(100px)', borderRadius: '50%', zIndex: 0, pointerEvents: 'none' }}></div>
         
@@ -53,7 +50,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Bento Grid Features */}
       <section id="features" style={{ padding: '5rem 5%', zIndex: 1 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
@@ -62,7 +58,6 @@ const LandingPage: React.FC = () => {
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-            {/* Card 1 */}
             <div className="glass-panel" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', animation: 'fadeInUp 1s ease-out forwards', animationDelay: '0.1s', opacity: 0 }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '1rem', background: 'hsla(var(--color-primary), 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'hsl(var(--color-primary))', marginBottom: '1.5rem' }}>
                 <BookOpen size={24} />
@@ -73,7 +68,6 @@ const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Card 2 */}
             <div className="glass-panel" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', animation: 'fadeInUp 1s ease-out forwards', animationDelay: '0.2s', opacity: 0 }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '1rem', background: 'hsla(var(--color-secondary), 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'hsl(var(--color-secondary))', marginBottom: '1.5rem' }}>
                 <Video size={24} />
@@ -84,7 +78,6 @@ const LandingPage: React.FC = () => {
               </p>
             </div>
 
-            {/* Card 3 */}
             <div className="glass-panel" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', animation: 'fadeInUp 1s ease-out forwards', animationDelay: '0.3s', opacity: 0 }}>
               <div style={{ width: '48px', height: '48px', borderRadius: '1rem', background: 'hsla(var(--color-success), 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'hsl(var(--color-success))', marginBottom: '1.5rem' }}>
                 <FileCheck size={24} />
@@ -98,7 +91,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Visual Component Section */}
       <section style={{ padding: '5rem 5%', background: 'hsla(var(--color-surface), 0.3)', borderTop: '1px solid hsla(var(--color-border), 0.5)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '4rem', flexWrap: 'wrap' }}>
           
@@ -132,7 +124,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer style={{ marginTop: 'auto', padding: '3rem 5%', borderTop: '1px solid hsla(var(--color-border), 0.5)', textAlign: 'center', color: 'hsl(var(--text-muted))' }}>
         <p style={{ marginBottom: '1rem' }}>© 2026 SESD Learning Management System. Built for absolute scaling.</p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', fontSize: '0.875rem' }}>

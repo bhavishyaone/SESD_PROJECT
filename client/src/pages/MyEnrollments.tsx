@@ -14,12 +14,8 @@ const MyEnrollments: React.FC = () => {
     const fetchEnrollments = async () => {
       try {
         const response = await api.get('/enrollments');
-        // Simple map simulation: depending on precise backend mapping, 
-        // backend should theoretically return enrollments specific to student based on JWT if mounted properly, 
-        // or we filter them based on the student payload.
         let data = response.data.data;
         if (Array.isArray(data)) {
-          // If the backend returns all, filter locally. Otherwise it's already filtered.
           const myEnrollments = data.filter((e: any) => e.studentId === user?._id || e.studentId?._id === user?._id);
           setEnrollments(myEnrollments);
         } else {

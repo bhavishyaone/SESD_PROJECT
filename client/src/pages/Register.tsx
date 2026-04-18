@@ -38,7 +38,6 @@ const Register: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       
-      {/* Background Decorators */}
       <div style={{ position: 'absolute', top: '10%', right: '-10%', width: '30vw', height: '30vw', background: 'radial-gradient(circle, hsla(var(--color-secondary), 0.15) 0%, transparent 70%)', filter: 'blur(60px)' }} />
       <div style={{ position: 'absolute', bottom: '-20%', left: '-10%', width: '50vw', height: '50vw', background: 'radial-gradient(circle, hsla(var(--color-primary), 0.08) 0%, transparent 70%)', filter: 'blur(80px)' }} />
 

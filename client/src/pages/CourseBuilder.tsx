@@ -34,7 +34,7 @@ const CourseBuilder: React.FC = () => {
         duration: Number(formData.duration),
         instructorId: user?._id
       });
-      navigate('/dashboard'); // Go back to instructor dashboard after success
+      navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to construct the course module.');
     } finally {
@@ -42,7 +42,6 @@ const CourseBuilder: React.FC = () => {
     }
   };
 
-  // Prevent generic students from bypassing route randomly
   if (user?.role === 'Student') {
     return <div className="p-8 text-center">Unauthorized access</div>;
   }

@@ -22,7 +22,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check locally stored user data on app mount
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
 

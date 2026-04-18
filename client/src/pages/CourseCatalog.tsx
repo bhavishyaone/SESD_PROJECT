@@ -22,11 +22,9 @@ const CourseCatalog: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        // Fetch all generic courses
         const res = await api.get('/courses');
         setCourses(res.data.data);
 
-        // Fetch user's enrollments to disable buttons
         if (user?.role === 'Student') {
           const enrollRes = await api.get('/enrollments');
           const enrollMap: Record<string, boolean> = {};

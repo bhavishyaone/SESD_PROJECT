@@ -15,8 +15,6 @@ const DashboardLayout: React.FC = () => {
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
-    { name: 'Courses', path: '/courses', icon: <BookOpen size={20} /> },
-    // Show 'My Enrollments' and Certificates to students
     ...(user?.role === 'Student' ? [
       { name: 'Enrollments', path: '/enrollments', icon: <GraduationCap size={20} /> },
       { name: 'Certificates', path: '/certificates', icon: <Award size={20} /> }
@@ -28,7 +26,6 @@ const DashboardLayout: React.FC = () => {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'hsl(var(--color-background))' }}>
       
-      {/* Sidebar */}
       <aside className="glass-panel" style={{ width: '250px', display: 'flex', flexDirection: 'column', borderRight: '1px solid hsl(var(--color-border))', borderRadius: 0 }}>
         <div style={{ padding: '2rem 1.5rem', borderBottom: '1px solid hsla(var(--color-border), 0.5)' }}>
           <h2 style={{ background: 'linear-gradient(90deg, hsl(var(--color-primary)), hsl(var(--color-secondary)))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
@@ -65,7 +62,6 @@ const DashboardLayout: React.FC = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
         <header style={{ padding: '1.5rem 2.5rem', borderBottom: '1px solid hsla(var(--color-border), 0.5)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h3 style={{ fontWeight: 500 }}>Welcome, {user?.name}</h3>

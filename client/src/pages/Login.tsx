@@ -35,7 +35,6 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       
-      {/* Background Decorators */}
       <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, hsla(var(--color-primary), 0.15) 0%, transparent 70%)', filter: 'blur(60px)' }} />
       <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '40vw', height: '40vw', background: 'radial-gradient(circle, hsla(var(--color-secondary), 0.1) 0%, transparent 70%)', filter: 'blur(60px)' }} />
 

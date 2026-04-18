@@ -9,17 +9,15 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate fetching metrics tailored to role
     const fetchMetrics = async () => {
       try {
         if (user?.role === 'Student') {
-          // E.g. get active enrollments
           const response = await api.get('/enrollments');
           const enrolls = response.data.data;
           setStats({ 
             enrollments: enrolls.length || 0,
             completed: enrolls.filter((e: any) => e.progress === 100).length || 0,
-            activeAssignments: 2 // placeholder metrics
+            activeAssignments: 2 
           });
         }
       } catch (error) {
@@ -84,7 +82,6 @@ const Dashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Placeholder for Recent Activity Graph/Table */}
       <div className="glass-panel" style={{ padding: '2rem', marginTop: '1rem', height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <p style={{ color: 'hsl(var(--text-muted))' }}>Activity Charts / Activity tables will populate here in the final phase.</p>
       </div>

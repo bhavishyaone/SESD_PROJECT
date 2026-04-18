@@ -14,20 +14,14 @@ const LearningPlayer: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  // In a real scenario, this would generate an assignment via /api/assignments based on course
-  // const assignmentId = 'placeholder-assignment-id'; 
+  
 
   const handleSubmitAssignment = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      // Typically we need a real assignment ID mapping, assuming Phase 11 POST logic:
-      // await api.post(`/assignments/submit`, { assignmentId, studentId: user?._id, content: submissionUrl });
-      
-      // Simulate completion
       setTimeout(async () => {
         setIsCompleted(true);
-        // Automatically request certificate generation (Phase 14 feature)
         try {
           await api.post('/certificates/generate', { studentId: user?._id, courseId });
         } catch(err) {
@@ -45,7 +39,6 @@ const LearningPlayer: React.FC = () => {
   return (
     <div style={{ display: 'flex', gap: '2rem', height: 'calc(100vh - 120px)' }}>
       
-      {/* Sidebar Modules */}
       <div className="glass-panel" style={{ width: '300px', display: 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '1.5rem', borderBottom: '1px solid hsla(var(--color-border), 0.5)' }}>
           <h3 style={{ fontSize: '1.125rem' }}>Course Modules</h3>
@@ -62,7 +55,6 @@ const LearningPlayer: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Content Pane */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         
         {activeTab === 'content' ? (

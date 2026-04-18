@@ -11,15 +11,10 @@ const MyCertificates: React.FC = () => {
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
-        // Typically fetching from a dedicated specific endpoint or filtering generic
         const res = await api.get('/certificates/generate').catch(() => null); 
-        // Fallback or generic 
         if (!res) {
             setCertificates([]); 
         }
-        
-        // As a temporary structural mapping, let's assume we map the local records if we had a dedicated GET `/certificates`
-        // Given Phase 14 created the schema and GET logic:
         const response = await api.get('/certificates').catch(() => null);
         if (response && response.data.data) {
            const studentCerts = response.data.data.filter((c: any) => c.studentId === user?._id || c.studentId?._id === user?._id);

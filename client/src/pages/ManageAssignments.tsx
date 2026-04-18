@@ -13,13 +13,10 @@ const ManageAssignments: React.FC = () => {
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        // Technically this fetches ALL submissions in a simple structure
-        // A real system would filter based on course instructor
         const res = await api.get('/assignments/submissions').catch(() => null);
         if (res && res.data.data) {
            setSubmissions(res.data.data);
         } else {
-           // Mock fallback if GET /submissions endpoint is limited
            setSubmissions([]);
         }
       } catch (error) {
@@ -42,7 +39,6 @@ const ManageAssignments: React.FC = () => {
         marks,
         type: 'percentage'
       });
-      // Update local state to reflect graded
       setSubmissions(prev => prev.map(sub => sub._id === submissionId ? { ...sub, status: 'graded', marks } : sub));
     } catch (err) {
       alert('Failed to evaluate grade.');

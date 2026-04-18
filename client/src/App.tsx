@@ -11,7 +11,6 @@ import Dashboard from './pages/Dashboard';
 import CourseCatalog from './pages/CourseCatalog';
 import LearningPlayer from './pages/LearningPlayer';
 
-// New Features Imports
 import MyEnrollments from './pages/MyEnrollments';
 import MyCertificates from './pages/MyCertificates';
 import CourseBuilder from './pages/CourseBuilder';
@@ -23,23 +22,19 @@ const App: React.FC = () => {
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Protected Routes encapsulated in DashboardLayout */}
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/courses" element={<CourseCatalog />} />
               <Route path="/course/:id/play" element={<LearningPlayer />} />
               
-              {/* Student Features */}
               <Route path="/enrollments" element={<MyEnrollments />} />
               <Route path="/certificates" element={<MyCertificates />} />
               
-              {/* Instructor Features */}
               <Route path="/courses/new" element={<CourseBuilder />} />
               <Route path="/manage-assignments" element={<ManageAssignments />} />
 
@@ -47,7 +42,6 @@ const App: React.FC = () => {
             </Route>
           </Route>
           
-          {/* Fallback */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
