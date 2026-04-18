@@ -15,6 +15,7 @@ const DashboardLayout: React.FC = () => {
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
+    { name: 'Explore Courses', path: '/courses', icon: <BookOpen size={20} /> },
     ...(user?.role === 'Student' ? [
       { name: 'Enrollments', path: '/enrollments', icon: <GraduationCap size={20} /> },
       { name: 'Certificates', path: '/certificates', icon: <Award size={20} /> }

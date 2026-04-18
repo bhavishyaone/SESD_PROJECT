@@ -12,13 +12,25 @@ const Dashboard: React.FC = () => {
     const fetchMetrics = async () => {
       try {
         if (user?.role === 'Student') {
-          const response = await api.get('/enrollments');
-          const enrolls = response.data.data;
-          setStats({ 
+          const response = await api.get('/enrollments').catch(() => null);
+          const enrolls = response?.data?.data || [];
+          setStats(prev => ({ 
+            ...prev,
             enrollments: enrolls.length || 0,
             completed: enrolls.filter((e: any) => e.progress === 100).length || 0,
-            activeAssignments: 2 
-          });
+            activeAssignments: enrolls.filter((e: any) => e.progress < 100).length || 0
+          }));
+        } else if (user?.role === 'Instructor') {
+          const coursesRes = await api.get('/courses').catch(() => null);
+          const subsRes = await api.get('/assignments/submissions').catch(() => null);
+          const c = coursesRes?.data?.data || [];
+          const s = subsRes?.data?.data || [];
+          setStats(prev => ({
+             ...prev,
+             enrollments: c.filter((course: any) => course.instructorId === user._id).length || 0,
+             completed: s.length || 0,
+             activeAssignments: s.filter((sub: any) => sub.status !== 'graded').length || 0
+          }));
         }
       } catch (error) {
         console.error("Failed to load dashboard metrics");
@@ -73,9 +85,9 @@ const Dashboard: React.FC = () => {
             </>
           ) : (
             <>
-              <StatCard title="Total Students" value="124" icon={<Users size={32} />} gradient="linear-gradient(135deg, hsl(var(--color-primary)), hsl(var(--color-secondary)))" />
-              <StatCard title="Manageable Courses" value="5" icon={<BookOpen size={32} />} gradient="linear-gradient(135deg, hsl(var(--color-success)), #2ecc71)" />
-              <StatCard title="Submissions to Grade" value="12" icon={<TrendingUp size={32} />} gradient="linear-gradient(135deg, #f39c12, #f1c40f)" />
+              <StatCard title="Manageable Courses" value={stats.enrollments} icon={<BookOpen size={32} />} gradient="linear-gradient(135deg, hsl(var(--color-success)), #2ecc71)" />
+              <StatCard title="Total Submissions" value={stats.completed} icon={<Users size={32} />} gradient="linear-gradient(135deg, hsl(var(--color-primary)), hsl(var(--color-secondary)))" />
+              <StatCard title="Submissions to Grade" value={stats.activeAssignments} icon={<TrendingUp size={32} />} gradient="linear-gradient(135deg, #f39c12, #f1c40f)" />
             </>
           )}
 
