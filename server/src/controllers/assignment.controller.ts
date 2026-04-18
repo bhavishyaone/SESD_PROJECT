@@ -25,4 +25,23 @@ export class AssignmentController {
       next(err);
     }
   };
+
+  public getSubmissions = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const submissions = await this.assignmentService.getSubmissions();
+      res.status(200).json({ status: 'success', data: submissions });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public grade = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { submissionId, marks } = req.body;
+      const graded = await this.assignmentService.gradeSubmission(submissionId, marks);
+      res.status(200).json({ status: 'success', data: graded });
+    } catch (err) {
+      next(err);
+    }
+  };
 }

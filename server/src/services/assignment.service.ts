@@ -18,4 +18,12 @@ export class AssignmentService {
   public async submitAssignment(data: Partial<ISubmission>): Promise<ISubmission> {
     return this.submissionRepository.save(data as any);
   }
+
+  public async getSubmissions(): Promise<ISubmission[]> {
+    return this.submissionRepository.findAll();
+  }
+
+  public async gradeSubmission(submissionId: string, marks: number): Promise<ISubmission | null> {
+    return this.submissionRepository.update(submissionId, { marks, status: 'graded' } as any);
+  }
 }
