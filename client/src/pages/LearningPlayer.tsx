@@ -10,11 +10,38 @@ const LearningPlayer: React.FC = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState<'content' | 'assignment'>('content');
+  const [modules, setModules] = useState<any[]>([]);
+  const [lessonsMap, setLessonsMap] = useState<Record<string, any[]>>({});
+  const [activeLesson, setActiveLesson] = useState<any>(null);
   const [submissionUrl, setSubmissionUrl] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  
+  React.useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const mRes = await api.get(`/courses/${courseId}/modules`);
+        const fetchedModules = mRes.data.data || [];
+        setModules(fetchedModules);
+
+        let map: Record<string, any[]> = {};
+        let firstLesson = null;
+
+        for (let m of fetchedModules) {
+           const lRes = await api.get(`/modules/${m._id}/lessons`);
+           map[m._id] = lRes.data.data || [];
+           if (!firstLesson && map[m._id].length > 0) {
+             firstLesson = map[m._id][0];
+           }
+        }
+        setLessonsMap(map);
+        if (firstLesson) setActiveLesson(firstLesson);
+      } catch (e) {
+        console.error("Failed fetching modules", e);
+      }
+    };
+    fetchContent();
+  }, [courseId]);
 
   const handleSubmitAssignment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,12 +73,34 @@ const LearningPlayer: React.FC = () => {
         </div>
         
         <div style={{ flex: 1, padding: '1rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          <button onClick={() => setActiveTab('content')} className="btn" style={{ justifyContent: 'flex-start', background: activeTab === 'content' ? 'hsla(var(--color-primary), 0.15)' : 'transparent', color: activeTab === 'content' ? 'hsl(var(--color-primary))' : 'inherit' }}>
-            <PlayCircle size={18} /> Introduction Video
-          </button>
-          <button onClick={() => setActiveTab('assignment')} className="btn" style={{ justifyContent: 'flex-start', background: activeTab === 'assignment' ? 'hsla(var(--color-primary), 0.15)' : 'transparent', color: activeTab === 'assignment' ? 'hsl(var(--color-primary))' : 'inherit' }}>
-            <FileText size={18} /> Final Project Submission
-          </button>
+          
+          {modules.map((m: any) => (
+             <div key={m._id} style={{ marginBottom: '1rem' }}>
+                <h4 style={{ fontSize: '0.9rem', marginBottom: '0.5rem', color: 'hsl(var(--text-secondary))' }}>{m.title}</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                   {lessonsMap[m._id]?.map(lesson => (
+                     <button 
+                        key={lesson._id}
+                        onClick={() => { setActiveTab('content'); setActiveLesson(lesson); }} 
+                        className="btn" 
+                        style={{ 
+                          justifyContent: 'flex-start', 
+                          background: (activeTab === 'content' && activeLesson?._id === lesson._id) ? 'hsla(var(--color-primary), 0.15)' : 'transparent', 
+                          color: (activeTab === 'content' && activeLesson?._id === lesson._id) ? 'hsl(var(--color-primary))' : 'inherit',
+                          fontSize: '0.85rem'
+                        }}>
+                        <PlayCircle size={16} /> {lesson.title}
+                     </button>
+                   ))}
+                </div>
+             </div>
+          ))}
+
+          <div style={{ marginTop: 'auto', borderTop: '1px solid hsla(var(--color-border), 0.5)', paddingTop: '1rem' }}>
+            <button onClick={() => setActiveTab('assignment')} className="btn" style={{ justifyContent: 'flex-start', width: '100%', background: activeTab === 'assignment' ? 'hsla(var(--color-primary), 0.15)' : 'transparent', color: activeTab === 'assignment' ? 'hsl(var(--color-primary))' : 'inherit' }}>
+              <FileText size={18} /> Final Project Submission
+            </button>
+          </div>
         </div>
       </div>
 
@@ -63,8 +112,10 @@ const LearningPlayer: React.FC = () => {
                <PlayCircle size={64} opacity={0.5} />
             </div>
             <div style={{ maxWidth: '800px', width: '100%', padding: '1rem 0' }}>
-              <h2>Welcome to the Module</h2>
-              <p style={{ color: 'hsl(var(--text-secondary))', marginTop: '0.5rem' }}>Please review the material completely before switching to the final project submission tab to claim your certificate.</p>
+              <h2>{activeLesson ? activeLesson.title : "Welcome"}</h2>
+              <p style={{ color: 'hsl(var(--text-secondary))', marginTop: '0.5rem' }}>
+                {activeLesson ? activeLesson.content : "Please select a lesson from the sidebar to begin."}
+              </p>
             </div>
           </div>
         ) : (
