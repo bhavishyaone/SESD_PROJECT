@@ -3,7 +3,8 @@ import { Document, Types } from 'mongoose';
 export interface ILesson extends Document {
   moduleId: Types.ObjectId;
   title: string;
-  content: string;
+  notesUrl: string;
+  videoUrl?: string;
 }
 
 export interface IModule extends Document {

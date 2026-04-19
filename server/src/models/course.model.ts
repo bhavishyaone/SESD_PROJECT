@@ -4,7 +4,8 @@ import { ICourse, IModule, ILesson } from '../interfaces/course.interface';
 const lessonSchema = new Schema<ILesson>({
   moduleId: { type: Schema.Types.ObjectId, ref: 'Module', required: true },
   title: { type: String, required: true },
-  content: { type: String, required: true }
+  notesUrl: { type: String, required: true },
+  videoUrl: { type: String }
 });
 
 const moduleSchema = new Schema<IModule>({
