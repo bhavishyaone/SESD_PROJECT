@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { PlusCircle, Save, Video, FileText, ChevronDown, ChevronRight, Upload, Trash2, HelpCircle, Zap, CheckCircle } from 'lucide-react';
+import { PlusCircle, Video, ChevronDown, ChevronRight, Upload, Trash2, HelpCircle, Zap, CheckCircle } from 'lucide-react';
 import api from '../api/axios';
 
 interface IQuestionForm {

@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { PlayCircle, FileText, CheckCircle, HelpCircle } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';
 
 const API_BASE = 'http://localhost:5000';
 
 const LearningPlayer: React.FC = () => {
   const { id: courseId } = useParams<{ id: string }>();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
   const [modules, setModules] = useState<any[]>([]);
   const [lessonsMap, setLessonsMap] = useState<Record<string, any[]>>({});
   
@@ -33,7 +29,6 @@ const LearningPlayer: React.FC = () => {
         setModules(fetchedModules);
 
         let map: Record<string, any[]> = {};
-        let firstLesson = null;
 
         for (let m of fetchedModules) {
            const lRes = await api.get(`/courses/modules/${m._id}/lessons`);
