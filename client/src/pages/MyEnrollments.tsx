@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { BookOpen, Play } from 'lucide-react';
+import { BookOpen, Play, CheckCircle } from 'lucide-react';
 import api from '../api/axios';
 
 const MyEnrollments: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [enrollments, setEnrollments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (authLoading) return;
     const fetchEnrollments = async () => {
       try {
         const response = await api.get('/enrollments');
@@ -32,7 +33,7 @@ const MyEnrollments: React.FC = () => {
     } else {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, authLoading]);
 
   if (loading) return <p>Loading enrollments...</p>;
 
@@ -52,25 +53,26 @@ const MyEnrollments: React.FC = () => {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {enrollments.map((enr) => (
-            <div key={enr._id} className="glass-card" style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div key={enr._id} className="hover-grow" style={{ background: 'hsla(var(--color-surface-hover), 0.5)', padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 'var(--radius-lg)', border: '2px solid hsla(228, 85%, 63%, 0.4)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                <div style={{ width: '64px', height: '64px', borderRadius: '1rem', background: 'hsla(var(--color-primary), 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'hsl(var(--color-primary))' }}>
-                  <BookOpen size={28} />
+                <div style={{ width: '64px', height: '64px', borderRadius: '1rem', background: enr.status === 'completed' ? 'hsla(var(--color-success), 0.1)' : 'hsla(var(--color-primary), 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: enr.status === 'completed' ? 'hsl(var(--color-success))' : 'hsl(var(--color-primary))' }}>
+                  {enr.status === 'completed' ? <CheckCircle size={28} /> : <BookOpen size={28} />}
                 </div>
                 <div>
                   <h3 style={{ fontSize: '1.125rem' }}>{enr.courseId?.title || `Course ID: ${enr.courseId}`}</h3>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.25rem', color: 'hsl(var(--text-secondary))', fontSize: '0.875rem' }}>
                     <span>Enrolled: {new Date(enr.enrolledAt || enr.createdAt).toLocaleDateString()}</span>
-                    <span>• Status: <span style={{ color: enr.status === 'active' ? 'hsl(var(--color-success))' : 'hsl(var(--text-muted))' }}>{enr.status}</span></span>
+                    <span>• Status: <span style={{ color: enr.status === 'completed' ? 'hsl(var(--color-success))' : 'hsl(var(--color-primary))', fontWeight: enr.status === 'completed' ? 'bold' : 'normal' }}>{enr.status === 'completed' ? 'Completed' : 'Active'} - {enr.progress}%</span></span>
                   </div>
                 </div>
               </div>
               
               <button 
-                className="btn btn-primary"
+                className={enr.status === 'completed' ? "btn btn-outline" : "btn btn-primary"}
+                style={enr.status === 'completed' ? { borderColor: 'hsl(var(--color-success))', color: 'hsl(var(--color-success))' } : {}}
                 onClick={() => navigate(`/course/${enr.courseId?._id || enr.courseId}/play`)}
               >
-                <Play size={18} /> Resume Course
+                {enr.status === 'completed' ? <><CheckCircle size={18} /> Review Course</> : <><Play size={18} /> Resume Course</>}
               </button>
             </div>
           ))}

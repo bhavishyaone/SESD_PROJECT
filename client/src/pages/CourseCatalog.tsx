@@ -14,7 +14,7 @@ interface Course {
 }
 
 const CourseCatalog: React.FC = () => {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +22,8 @@ const CourseCatalog: React.FC = () => {
   const [enrolledCourses, setEnrolledCourses] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
+    if (authLoading) return;
+
     const fetchCourses = async () => {
       try {
         const res = await api.get('/courses');
@@ -31,7 +33,8 @@ const CourseCatalog: React.FC = () => {
           const enrollRes = await api.get('/enrollments');
           const enrollMap: Record<string, boolean> = {};
           enrollRes.data.data.forEach((e: any) => {
-            enrollMap[e.courseId] = true;
+            const cId = e.courseId?._id || e.courseId;
+            enrollMap[cId] = true;
           });
           setEnrolledCourses(enrollMap);
         }
@@ -42,7 +45,7 @@ const CourseCatalog: React.FC = () => {
       }
     };
     fetchCourses();
-  }, [user]);
+  }, [user, authLoading]);
 
   const handleEnroll = async (courseId: string) => {
     setEnrollingMap(prev => ({ ...prev, [courseId]: true }));
@@ -90,12 +93,18 @@ const CourseCatalog: React.FC = () => {
 
                 {user?.role === 'Student' && (
                   <button 
-                    className="btn btn-primary" 
-                    style={{ width: '100%' }}
-                    disabled={enrolledCourses[course._id] || enrollingMap[course._id]}
-                    onClick={() => handleEnroll(course._id)}
+                    className={enrolledCourses[course._id] ? "btn btn-surface" : "btn btn-primary"} 
+                    style={{ width: '100%', borderColor: enrolledCourses[course._id] ? 'hsl(var(--color-primary))' : undefined, color: enrolledCourses[course._id] ? 'hsl(var(--color-primary))' : undefined }}
+                    disabled={enrollingMap[course._id]}
+                    onClick={() => {
+                        if (enrolledCourses[course._id]) {
+                            navigate(`/course/${course._id}/play`);
+                        } else {
+                            handleEnroll(course._id);
+                        }
+                    }}
                   >
-                    {enrolledCourses[course._id] ? 'Enrolled securely' : 
+                    {enrolledCourses[course._id] ? '▶ Resume Course' : 
                       enrollingMap[course._id] ? 'Registering...' : 'Enroll Now'}
                   </button>
                 )}
