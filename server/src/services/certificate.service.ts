@@ -9,20 +9,25 @@ export class CertificateService {
     this.certificateRepository = new CertificateRepository();
   }
 
-  public async generateCertificate(data: Partial<ICertificate>): Promise<ICertificate> {
-    const existing = await this.certificateRepository.findByStudentAndCourse(data.studentId, data.courseId);
-    if (existing) {
-      throw new ApiError(409, 'Certificate already issued for this course');
-    }
-    
-    return this.certificateRepository.save(data as any);
+  public async generateCertificate(studentId: string, courseId: string): Promise<ICertificate> {
+    const existing = await this.certificateRepository.findByStudentAndCourse(studentId, courseId);
+    if (existing) throw new ApiError(409, 'Certificate already issued for this course');
+    return this.certificateRepository.save({ studentId, courseId } as any);
+  }
+
+  public async checkAndGenerate(studentId: string, courseId: string): Promise<ICertificate | null> {
+    const existing = await this.certificateRepository.findByStudentAndCourse(studentId, courseId);
+    if (existing) return existing;
+    return this.certificateRepository.save({ studentId, courseId } as any);
+  }
+
+  public async getCertificatesByStudent(studentId: string): Promise<ICertificate[]> {
+    return this.certificateRepository.findByStudent(studentId);
   }
 
   public async getCertificate(id: string): Promise<ICertificate> {
     const cert = await this.certificateRepository.findById(id);
-    if (!cert) {
-      throw new ApiError(404, 'Certificate not found');
-    }
+    if (!cert) throw new ApiError(404, 'Certificate not found');
     return cert;
   }
 }

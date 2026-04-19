@@ -8,6 +8,10 @@ export class CertificateRepository extends BaseRepository<ICertificate> {
   }
 
   public async findByStudentAndCourse(studentId: any, courseId: any): Promise<ICertificate | null> {
-    return this.model.findOne({ studentId, courseId });
+    return this.model.findOne({ studentId, courseId }).exec();
+  }
+
+  public async findByStudent(studentId: string): Promise<ICertificate[]> {
+    return this.model.find({ studentId }).populate('courseId', 'title description').exec();
   }
 }
