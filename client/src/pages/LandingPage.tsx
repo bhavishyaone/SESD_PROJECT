@@ -134,7 +134,7 @@ const LandingPage: React.FC = () => {
     { icon: <Shield size={24} />, title: 'Role-Based Access', desc: 'Secure platform access with three distinct roles — Student, Instructor, Admin — each with strict permissions and distinctly tailored dashboards.', accent: 'hsl(var(--color-primary))' },
     { icon: <Brain size={24} />, title: 'Smart Progress Tracking', desc: 'Every video watch, note download, and quiz attempt is individually recorded. Module and course completion auto-triggers when all children are satisfied.', accent: 'hsl(var(--color-primary))' },
     { icon: <Globe size={24} />, title: 'Global Content Delivery', desc: "All course videos and PDF notes are stored and served via a global delivery network — ensuring lightning-fast buffering anywhere in the world.", accent: 'hsl(var(--color-primary))' },
-    { icon: <Star size={24} />, title: 'Seamless User Interface', desc: 'A blazing fast, responsive design ensures students and instructors can access learning materials smoothly across desktop, tablet, and mobile.', accent: 'hsl(var(--color-primary))' },
+
   ];
 
   const faqs = [
@@ -183,7 +183,7 @@ const LandingPage: React.FC = () => {
       <section style={{ padding: 'clamp(5rem, 12vw, 10rem) 5% 6rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative' }}>
 
 
-        <div style={{ maxWidth: 880, zIndex: 1 }}>
+        <div style={{ maxWidth: 1000, zIndex: 1 }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.35rem 1rem', background: 'hsla(var(--color-primary), 0.1)', border: '1px solid hsla(var(--color-primary), 0.25)', borderRadius: '2rem', fontSize: '0.8rem', color: 'hsl(var(--color-primary))', fontWeight: 500, marginBottom: '2rem', animation: 'fadeInUp 0.6s ease forwards' }}>
             <Zap size={13} />
             Complete Learning Ecosystem · Build · Deploy · Grow
@@ -196,7 +196,7 @@ const LandingPage: React.FC = () => {
             </span>
           </h1>
 
-          <p style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', color: 'hsl(var(--text-secondary))', maxWidth: 620, margin: '0 auto 2.5rem', lineHeight: 1.7, animation: 'fadeInUp 0.7s 0.2s ease both' }}>
+          <p style={{ fontSize: 'clamp(1rem, 2vw, 1.2rem)', color: 'hsl(var(--text-secondary))', maxWidth: 1000, margin: '0 auto 2.5rem', lineHeight: 1.7, animation: 'fadeInUp 0.7s 0.2s ease both' }}>
             Instructors build, deploy, and track courses. Students learn, progress, and earn verifiable certificates.
             Academix is a complete, production-ready learning management ecosystem built for the modern web.
           </p>
@@ -210,16 +210,10 @@ const LandingPage: React.FC = () => {
             </button>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.5rem', marginTop: '3rem', flexWrap: 'wrap', animation: 'fadeInUp 0.7s 0.4s ease both' }}>
-            {[{ icon: <CheckCircle size={14} color="hsl(var(--color-success))" />, text: 'No credit card required' }, { icon: <CheckCircle size={14} color="hsl(var(--color-success))" />, text: 'Free forever, self-hosted' }, { icon: <CheckCircle size={14} color="hsl(var(--color-success))" />, text: 'Full source included' }].map((item, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'hsl(var(--text-muted))', fontSize: '0.85rem' }}>
-                {item.icon} {item.text}
-              </div>
-            ))}
-          </div>
+
         </div>
 
-        <div style={{ marginTop: '5rem', zIndex: 1, width: '100%', maxWidth: 1100 }}>
+        <div style={{ marginTop: '5rem', zIndex: 1, width: '100%', maxWidth: 1400 }}>
           <div style={{ background: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.25rem', overflow: 'hidden', boxShadow: '0 40px 80px -20px rgba(0,0,0,0.6), 0 0 80px -20px rgba(34,197,94,0.15)' }}>
             <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
               {['#ef4444', '#f59e0b', '#22c55e'].map((c, i) => <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: c }} />)}
@@ -245,7 +239,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       <section style={{ padding: '4rem 5%', borderTop: '1px solid hsla(var(--color-border), 0.3)', borderBottom: '1px solid hsla(var(--color-border), 0.3)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <FadeIn>
             <p style={{ textAlign: 'center', color: 'hsl(var(--text-muted))', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '2.5rem' }}>Platform at a Glance</p>
           </FadeIn>
@@ -260,7 +254,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       <section id="features" style={{ padding: '7rem 5%' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <FadeIn>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
               <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>What's Inside</span>
@@ -279,7 +273,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       <section id="how-it-works" style={{ padding: '7rem 5%', background: 'hsla(var(--color-surface), 0.25)', borderTop: '1px solid hsla(var(--color-border), 0.4)', borderBottom: '1px solid hsla(var(--color-border), 0.4)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: '5rem', alignItems: 'center' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: '5rem', alignItems: 'center' }}>
           <div>
             <FadeIn>
               <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>For Students</span>
@@ -308,7 +302,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       <section style={{ padding: '7rem 5%' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <FadeIn>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
               <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Progress System</span>
@@ -327,6 +321,8 @@ const LandingPage: React.FC = () => {
               { icon: <CheckCircle size={22} />, title: 'Lesson Complete', desc: 'When video, notes, and quiz are all satisfied, the lesson receives a persistent green tick — forever.' },
               { icon: <BookOpen size={22} />, title: 'Module Complete', desc: 'When every lesson inside a module is complete, the module header gets its completion checkmark.' },
               { icon: <Award size={22} />, title: 'Course Complete', desc: 'All modules done? The system auto-flags your enrollment as completed and issues your certificate instantly.' },
+              { icon: <TrendingUp size={22} />, title: 'Analytics Synced', desc: 'Every milestone you hit instantly updates your instructor\'s engagement dashboard in real-time.' },
+              { icon: <GraduationCap size={22} />, title: 'Certificate Minted', desc: 'Upon reaching 100%, a digitally verifiable PDF certificate is permanently secured into your vault.' },
             ].map((item, i) => (
               <FadeIn key={i} delay={i * 0.07}>
                 <div className="glass-panel" style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -343,7 +339,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       <section style={{ padding: '7rem 5%', background: 'hsla(var(--color-surface), 0.25)', borderTop: '1px solid hsla(var(--color-border), 0.4)', borderBottom: '1px solid hsla(var(--color-border), 0.4)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: '4rem', alignItems: 'center' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: '4rem', alignItems: 'center' }}>
           <FadeIn>
             <span style={{ color: 'hsl(45, 90%, 55%)', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Certificates</span>
             <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', marginTop: '0.75rem', marginBottom: '1.25rem', lineHeight: 1.2 }}>
@@ -401,7 +397,7 @@ const LandingPage: React.FC = () => {
 
 
       <section id="testimonials" style={{ padding: '7rem 5%', background: 'hsla(var(--color-surface), 0.25)', borderTop: '1px solid hsla(var(--color-border), 0.4)', borderBottom: '1px solid hsla(var(--color-border), 0.4)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <FadeIn>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
               <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Testimonials</span>
@@ -415,12 +411,14 @@ const LandingPage: React.FC = () => {
             <FadeIn delay={0.3}><TestimonialCard name="Sneha Joshi" role="Data Science Instructor" initials="SJ" color="linear-gradient(135deg, hsl(348, 83%, 47%), #c0392b)" text="I uploaded a 45-minute video and it was on Cloudinary in seconds. The whole pipeline — upload, publish, student access — just works without any friction." /></FadeIn>
             <FadeIn delay={0.4}><TestimonialCard name="Dev Anand" role="Computer Science Student" initials="DA" color="linear-gradient(135deg, hsl(var(--color-secondary)), #8e44ad)" text="Got my certificate the moment I submitted my last assignment. It looked professional enough to add to my LinkedIn profile on the same day!" /></FadeIn>
             <FadeIn delay={0.5}><TestimonialCard name="Kavya Reddy" role="Instructor · 1 Course" initials="KR" color="linear-gradient(135deg, hsl(200, 80%, 55%), #2980b9)" text="The real-time instructor analytics are what sold me. Seeing that 78% of students skipped the third quiz, I rewrote the questions and retention jumped." /></FadeIn>
+            <FadeIn delay={0.6}><TestimonialCard name="Anaya Patel" role="UX Design Student" initials="AP" color="linear-gradient(135deg, hsl(150, 60%, 50%), #27ae60)" text="The interface is so clean. Earning certificates actually feels incredibly rewarding on this platform when there's zero friction in the learning process." /></FadeIn>
+            <FadeIn delay={0.7}><TestimonialCard name="Vikram Sharma" role="Software Engineer" initials="VS" color="linear-gradient(135deg, hsl(210, 80%, 55%), #3498db)" text="I use Academix to host my internal team training. The ability to track their progress down to the specific video timestamps they watched is an absolute gamechanger." /></FadeIn>
           </div>
         </div>
       </section>
 
       <section id="faq" style={{ padding: '7rem 5%' }}>
-        <div style={{ maxWidth: 760, margin: '0 auto' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <FadeIn>
             <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
               <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600, fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>FAQ</span>
@@ -453,7 +451,7 @@ const LandingPage: React.FC = () => {
 
       <section style={{ padding: '7rem 5%', background: 'hsla(var(--color-surface), 0.25)', borderTop: '1px solid hsla(var(--color-border), 0.4)' }}>
         <FadeIn>
-          <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
             <div style={{ width: 76, height: 76, borderRadius: '1.5rem', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem' }}>
               <GraduationCap size={36} color="#ffffff" />
             </div>
@@ -480,7 +478,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       <footer style={{ padding: '3rem 5%', borderTop: '1px solid hsla(var(--color-border), 0.5)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
             <p style={{ color: 'hsl(var(--text-muted))', fontSize: '0.82rem' }}>© 2026 Academix. All rights reserved.</p>
             <div style={{ display: 'flex', gap: '1.5rem' }}>
