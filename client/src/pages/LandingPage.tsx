@@ -4,7 +4,7 @@ import {
   BookOpen, GraduationCap, Video, FileCheck, CheckCircle,
   Users, Award, TrendingUp, PlayCircle, Shield, Zap,
   ChevronDown, Star, ArrowRight, Code, Brain, BarChart3,
-  FileText, ClipboardCheck, Bell, Lock, Globe, Cpu
+  FileText, ClipboardCheck, Globe
 } from 'lucide-react';
 
 const useIntersection = (threshold = 0.15) => {
@@ -62,7 +62,7 @@ const StatCounter: React.FC<{ end: number; label: string; suffix?: string }> = (
   );
 };
 
-const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; desc: string; accent: string; delay?: number }> = ({ icon, title, desc, accent, delay = 0 }) => (
+const FeatureCard: React.FC<{ icon: React.ReactNode; title: string; desc: string; delay?: number }> = ({ icon, title, desc, delay = 0 }) => (
   <FadeIn delay={delay}>
     <div
       className="glass-panel"
@@ -272,7 +272,7 @@ const LandingPage: React.FC = () => {
           </FadeIn>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
             {features.map((f, i) => (
-              <FeatureCard key={i} icon={f.icon} title={f.title} desc={f.desc} accent={f.accent} delay={i * 0.05} />
+              <FeatureCard key={i} icon={f.icon} title={f.title} desc={f.desc} delay={i * 0.05} />
             ))}
           </div>
         </div>

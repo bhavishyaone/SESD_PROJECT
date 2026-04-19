@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Award, Share2, Download } from 'lucide-react';
+import { Award, Download } from 'lucide-react';
 import api from '../api/axios';
 
 const MyCertificates: React.FC = () => {
