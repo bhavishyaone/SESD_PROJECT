@@ -1,20 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --color-primary: 228 85% 63%;
-  --color-primary-light: 228 85% 73%;
-  --color-secondary: 258 85% 63%;
-  --color-success: 152 69% 45%; 
+  --color-primary: 0 0% 96%;
+  --color-primary-light: 0 0% 100%;
+  --color-secondary: 0 0% 55%;
+  --color-success: 152 69% 45%;
   --color-danger: 348 83% 47%;
-  
-  --color-background: 240 10% 4%;
-  --color-surface: 240 6% 10%;
-  --color-surface-hover: 240 6% 15%;
-  --color-border: 240 6% 20%;
-  
-  --text-primary: 0 0% 100%;
-  --text-secondary: 240 5% 65%;
-  --text-muted: 240 5% 45%;
+
+  --color-background: 0 0% 3%;
+  --color-surface: 0 0% 8%;
+  --color-surface-hover: 0 0% 12%;
+  --color-border: 0 0% 16%;
+
+  --text-primary: 0 0% 98%;
+  --text-secondary: 0 0% 55%;
+  --text-muted: 0 0% 36%;
 
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -83,25 +83,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, hsl(var(--color-primary)) 0%, hsl(var(--color-secondary)) 100%);
-  color: white;
-  box-shadow: 0 4px 14px 0 hsla(var(--color-primary), 0.39);
+  background: #ffffff;
+  color: #000000;
+  font-weight: 600;
 }
 
 .btn-primary:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 6px 20px hsla(var(--color-primary), 0.23);
+  background: #e0e0e0;
   transform: translateY(-1px);
 }
 
 .btn-surface {
-  background: hsl(var(--color-surface));
-  color: hsl(var(--text-primary));
-  border: 1px solid hsl(var(--color-border));
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .btn-surface:hover {
-  background: hsl(var(--color-surface-hover));
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .input-base {
@@ -151,4 +151,58 @@ h1, h2, h3, h4, h5, h6 {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+@media print {
+  body {
+    background-color: white !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .print-certificate-container, .print-certificate-container * {
+    visibility: visible;
+  }
+  .print-certificate-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: white !important;
+  }
+  @page {
+    size: landscape;
+    margin: 1cm;
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+a {
+  text-decoration: none;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+@media (min-width: 768px) {
+  .nav-links { display: flex !important; }
 }
