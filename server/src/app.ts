@@ -1,11 +1,15 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
+import path from 'path';
 import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './routes/auth.routes';
 import courseRoutes from './routes/course.routes';
 import enrollmentRoutes from './routes/enrollment.routes';
 import assignmentRoutes from './routes/assignment.routes';
 import certificateRoutes from './routes/certificate.routes';
+import gradingRoutes from './routes/grading.routes';
+import uploadRoutes from './routes/upload.routes';
+import userRoutes from './routes/user.routes';
 
 class App {
   public app: Application;
@@ -26,6 +30,7 @@ class App {
     this.app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    this.app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
   }
 
   private initializeRoutes() {
@@ -34,6 +39,9 @@ class App {
     this.app.use('/api/enrollments', enrollmentRoutes);
     this.app.use('/api/assignments', assignmentRoutes);
     this.app.use('/api/certificates', certificateRoutes);
+    this.app.use('/api/grading', gradingRoutes);
+    this.app.use('/api/upload', uploadRoutes);
+    this.app.use('/api/users', userRoutes);
     this.app.get('/', (req: Request, res: Response) => {
       res.status(200).json({ message: 'Welcome to LMS API' });
     });
@@ -45,8 +53,7 @@ class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-    console.log(` App listening on the port ${this.port}`);
-
+      console.log(`App listening on the port ${this.port}`);
     });
   }
 }
