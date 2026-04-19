@@ -5,6 +5,13 @@ const enrollmentSchema = new Schema<IEnrollment>({
   studentId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   courseId: { type: Schema.Types.ObjectId, ref: 'Course', required: true },
   progress: { type: Number, default: 0 },
+  progressTracking: [{
+    lessonId: { type: Schema.Types.ObjectId, ref: 'Lesson' },
+    videoWatched: { type: Boolean, default: false },
+    notesDownloaded: { type: Boolean, default: false },
+    quizAttempted: { type: Boolean, default: false },
+    isCompleted: { type: Boolean, default: false }
+  }],
   status: { type: String, enum: ['active', 'completed', 'dropped'], default: 'active' },
   enrolledAt: { type: Date, default: Date.now }
 }, { timestamps: true });
