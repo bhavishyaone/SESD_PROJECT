@@ -235,11 +235,19 @@ const LearningPlayer: React.FC = () => {
                             <p style={{ color: 'hsl(var(--text-secondary))', marginBottom: '3rem', fontSize: '1.15rem' }}>Detailed instructor materials and PDF notes for this specific lesson.</p>
                             
                             {activeLesson.notesUrl ? (
-                                <a href={activeLesson.notesUrl.startsWith('http') ? activeLesson.notesUrl : `${API_BASE}${activeLesson.notesUrl.startsWith('/') ? '' : '/'}${activeLesson.notesUrl}`} onClick={() => updateProgressTracking('notes')} download target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
-                                    <button className="btn btn-primary" style={{ padding: '1.25rem 4rem', fontSize: '1.25rem' }}>
-                                        <FileText size={24} /> Download Notes
-                                    </button>
-                                </a>
+                                (() => {
+                                    const rawUrl = activeLesson.notesUrl.startsWith('http') ? activeLesson.notesUrl : `${API_BASE}${activeLesson.notesUrl.startsWith('/') ? '' : '/'}${activeLesson.notesUrl}`;
+                                    // Try to force attachment download for Cloudinary URLs
+                                    const downloadUrl = rawUrl.includes('/upload/') && rawUrl.includes('cloudinary') 
+                                        ? rawUrl.replace('/upload/', '/upload/fl_attachment/') 
+                                        : rawUrl;
+                                        
+                                    return (
+                                        <a href={downloadUrl} onClick={() => updateProgressTracking('notes')} target="_blank" rel="noreferrer" className="btn btn-primary" style={{ padding: '1.25rem 4rem', fontSize: '1.25rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}>
+                                            <FileText size={24} /> Download Notes
+                                        </a>
+                                    );
+                                })()
                             ) : (
                                 <p style={{ color: 'hsl(var(--color-danger))', fontSize: '1.1rem' }}>No documents attached yet.</p>
                             )}
