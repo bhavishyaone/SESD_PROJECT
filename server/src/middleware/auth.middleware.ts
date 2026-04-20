@@ -12,11 +12,18 @@ export interface AuthRequest extends Request {
 export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return next(new ApiError(401, 'Authentication token missing'));
+  // Support token via query param as a fallback for browser navigations
+  // (e.g. anchor-click downloads) that cannot send Authorization headers.
+  let token: string | undefined;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    token = authHeader.split(' ')[1];
+  } else if (req.query.token && typeof req.query.token === 'string') {
+    token = req.query.token;
   }
 
-  const token = authHeader.split(' ')[1];
+  if (!token) {
+    return next(new ApiError(401, 'Authentication token missing'));
+  }
 
   try {
     const secret = process.env.JWT_SECRET || 'fallback_secret';

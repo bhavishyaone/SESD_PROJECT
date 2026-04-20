@@ -1,22 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { upload } from '../middleware/upload.middleware';
 import { authMiddleware, roleMiddleware } from '../middleware/auth.middleware';
-import { v2 as cloudinary } from 'cloudinary';
 import https from 'https';
 import http from 'http';
 import { IncomingMessage } from 'http';
-import dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
-
-// Cloudinary must be configured here independently so this router
-// can generate signed URLs without relying on import order.
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 const router = Router();
 
@@ -31,82 +18,85 @@ function isAllowedUrl(url: string): boolean {
 }
 
 /**
- * Parse the public_id, resource_type and format from a Cloudinary CDN URL.
- * URL format: https://res.cloudinary.com/<cloud>/<resource_type>/upload/[v<ver>/]<public_id>.<ext>
+ * Inject fl_attachment into Cloudinary URLs so the CDN serves the raw file.
+ * Raw Cloudinary resources require this flag to be delivered.
  */
-function extractCloudinaryInfo(
-  url: string
-): { publicId: string; resourceType: string; format: string } | null {
-  try {
-    const urlObj = new URL(url);
-    if (!urlObj.hostname.includes('cloudinary.com')) return null;
-
-    // pathname: /<cloud>/<resource_type>/upload/[v<version>/]<public_id>.<format>
-    const parts = urlObj.pathname.split('/').filter(Boolean);
-    if (parts.length < 4 || parts[2] !== 'upload') return null;
-
-    const resourceType = parts[1]; // 'image' | 'video' | 'raw'
-
-    // Skip optional version segment like 'v1234567890'
-    let idx = 3;
-    if (parts[idx] && /^v\d+$/.test(parts[idx])) idx++;
-
-    const publicIdWithExt = parts.slice(idx).join('/');
-    const lastDot = publicIdWithExt.lastIndexOf('.');
-    const publicId =
-      lastDot !== -1 ? publicIdWithExt.substring(0, lastDot) : publicIdWithExt;
-    const format = lastDot !== -1 ? publicIdWithExt.substring(lastDot + 1) : '';
-
-    return { publicId, resourceType, format };
-  } catch {
-    return null;
+function toFetchUrl(url: string): string {
+  if (
+    url.includes('cloudinary.com') &&
+    url.includes('/upload/') &&
+    !url.includes('fl_attachment')
+  ) {
+    return url.replace('/upload/', '/upload/fl_attachment/');
   }
+  return url;
 }
 
 /**
- * Fetch a URL and pipe it to `res`, following HTTP redirects.
- * Node's https.get does NOT auto-follow redirects.
+ * Fetch a remote URL (with redirect following) and stream the body to `res`.
+ *
+ * IMPORTANT: We pass browser-like headers because Cloudinary's CDN blocks
+ * server-to-server requests that lack a User-Agent header with HTTP 401.
  */
 function fetchAndStream(
   fetchUrl: string,
   res: Response,
   contentDisposition: string,
-  maxRedirects = 5
+  maxRedirects = 5,
 ): void {
   const get = fetchUrl.startsWith('https') ? https.get : http.get;
 
-  const req = get(fetchUrl, { timeout: 15000 }, (remote: IncomingMessage) => {
-    const { statusCode, headers } = remote;
+  const req = get(
+    fetchUrl,
+    {
+      timeout: 20000,
+      headers: {
+        // Cloudinary CDN returns 401 for requests without a real User-Agent
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' +
+          '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        Accept: 'application/pdf,application/octet-stream,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        Connection: 'keep-alive',
+      },
+    },
+    (remote: IncomingMessage) => {
+      const { statusCode, headers } = remote;
 
-    // Follow redirects
-    if ([301, 302, 307, 308].includes(statusCode!) && headers.location) {
-      remote.resume();
-      if (maxRedirects > 0) {
-        return fetchAndStream(headers.location, res, contentDisposition, maxRedirects - 1);
+      // Follow redirects — Node's https.get does NOT auto-follow
+      if ([301, 302, 307, 308].includes(statusCode!) && headers.location) {
+        remote.resume();
+        if (maxRedirects > 0) {
+          return fetchAndStream(headers.location, res, contentDisposition, maxRedirects - 1);
+        }
+        if (!res.headersSent)
+          res.status(502).json({ status: 'error', message: 'Too many redirects' });
+        return;
       }
-      if (!res.headersSent)
-        res.status(502).json({ status: 'error', message: 'Too many redirects' });
-      return;
-    }
 
-    if (statusCode !== 200) {
-      remote.resume();
-      if (!res.headersSent)
-        res.status(statusCode || 502).json({
-          status: 'error',
-          message: `Remote server returned HTTP ${statusCode}`,
-        });
-      return;
-    }
+      if (statusCode !== 200) {
+        remote.resume();
+        console.error(`[Proxy] Remote returned ${statusCode} for ${fetchUrl}`);
+        if (!res.headersSent)
+          res.status(statusCode || 502).json({
+            status: 'error',
+            message: `Remote server returned HTTP ${statusCode}`,
+          });
+        return;
+      }
 
-    const contentType = headers['content-type'] || 'application/octet-stream';
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Content-Disposition', contentDisposition);
-    if (headers['content-length']) res.setHeader('Content-Length', headers['content-length']);
+      const contentType = headers['content-type'] || 'application/octet-stream';
+      // We set our OWN Content-Disposition — ignore what Cloudinary sends
+      res.setHeader('Content-Type', contentType);
+      res.setHeader('Content-Disposition', contentDisposition);
+      if (headers['content-length']) res.setHeader('Content-Length', headers['content-length']);
+      // Allow cross-origin iframes (Vercel ↔ Render)
+      res.removeHeader('X-Frame-Options');
 
-    remote.pipe(res as any);
-    remote.on('error', () => { if (!res.headersSent) res.status(502).end(); });
-  });
+      remote.pipe(res as any);
+      remote.on('error', () => { if (!res.headersSent) res.status(502).end(); });
+    },
+  );
 
   req.on('timeout', () => {
     req.destroy();
@@ -115,7 +105,7 @@ function fetchAndStream(
   });
 
   req.on('error', (err) => {
-    console.error('[Proxy fetch error]', err.message);
+    console.error('[Proxy error]', err.message);
     if (!res.headersSent)
       res.status(502).json({ status: 'error', message: 'Failed to reach file server' });
   });
@@ -126,10 +116,9 @@ function fetchAndStream(
 /**
  * GET /api/upload/view?url=<cloudinaryUrl>
  *
- * Serves the file inline (for <iframe> PDF rendering).
- * Uses a Cloudinary signed URL to bypass any auth restrictions,
- * then proxies through our server with Content-Disposition: inline.
- * No JWT required — iframes cannot send Authorization headers.
+ * Proxies the Cloudinary file server-side with a browser User-Agent,
+ * then serves it with Content-Disposition: inline so an <iframe> can
+ * render it. No auth required — iframes cannot send Authorization headers.
  */
 router.get('/view', (req: Request, res: Response): void => {
   const { url } = req.query;
@@ -142,39 +131,20 @@ router.get('/view', (req: Request, res: Response): void => {
     return;
   }
 
-  const info = extractCloudinaryInfo(url);
-  const filename =
-    url.split('?')[0].split('/').pop() || 'document.pdf';
-
-  if (info && process.env.CLOUDINARY_API_SECRET) {
-    try {
-      // Generate a signed URL — bypasses private/authenticated delivery configs.
-      const signedUrl = cloudinary.url(info.publicId, {
-        resource_type: info.resourceType as any,
-        format: info.format || undefined,
-        sign_url: true,
-        type: 'upload',
-        secure: true,
-      });
-      console.log('[View proxy] Signed URL:', signedUrl);
-      fetchAndStream(signedUrl, res, `inline; filename="${filename}"`);
-      return;
-    } catch (e) {
-      console.error('[View proxy] Failed to generate signed URL, falling back:', e);
-    }
-  }
-
-  // Fallback: proxy the raw URL directly
-  fetchAndStream(url, res, `inline; filename="${filename}"`);
+  const filename = url.split('?')[0].split('/').pop() || 'document.pdf';
+  const fetchUrl = toFetchUrl(url);
+  console.log('[View] Fetching:', fetchUrl);
+  fetchAndStream(fetchUrl, res, `inline; filename="${filename}"`);
 });
 
 /**
  * GET /api/upload/download?url=<cloudinaryUrl>
  *
- * Forces a file download via Cloudinary's private_download_url API.
- * This generates a time-limited (1 hour) authenticated download link
- * so the browser always saves the file locally.
- * Requires a valid JWT.
+ * Redirects the browser directly to the Cloudinary fl_attachment URL.
+ * Because the browser makes this request (not our server), Cloudinary
+ * accepts it. Content-Disposition: attachment causes a file save with
+ * NO new tab opening.
+ * Requires a valid JWT (authenticated students only).
  */
 router.get('/download', authMiddleware, (req: Request, res: Response): void => {
   const { url } = req.query;
@@ -187,34 +157,11 @@ router.get('/download', authMiddleware, (req: Request, res: Response): void => {
     return;
   }
 
-  const info = extractCloudinaryInfo(url);
-  const filename = url.split('?')[0].split('/').pop() || 'download.pdf';
-
-  if (info && process.env.CLOUDINARY_API_SECRET) {
-    try {
-      // private_download_url generates an authenticated API download URL.
-      // It uses our API key+secret to sign and is valid for 1 hour.
-      const expiresAt = Math.floor(Date.now() / 1000) + 3600;
-      const downloadUrl = (cloudinary.utils as any).private_download_url(
-        info.publicId,
-        info.format,
-        {
-          resource_type: info.resourceType,
-          type: 'upload',
-          expires_at: expiresAt,
-        }
-      );
-      console.log('[Download proxy] Redirecting to private_download_url');
-      // Redirect — Cloudinary's API serves the file with attachment headers
-      res.redirect(302, downloadUrl);
-      return;
-    } catch (e) {
-      console.error('[Download proxy] Failed to generate download URL, falling back:', e);
-    }
-  }
-
-  // Fallback: proxy with attachment header
-  fetchAndStream(url, res, `attachment; filename="${filename}"`);
+  // Redirect browser directly to the fl_attachment URL.
+  // The browser can access Cloudinary (200); our server cannot (401 from CDN).
+  const downloadUrl = toFetchUrl(url);
+  console.log('[Download] Redirecting to:', downloadUrl);
+  res.redirect(302, downloadUrl);
 });
 
 /**

@@ -80,34 +80,31 @@ const LearningPlayer: React.FC = () => {
       }
   };
 
-  // Proxy download: the backend streams the Cloudinary file server-to-server
-  // (no CORS) with Content-Disposition: attachment, so the browser always
-  // saves the file locally — no new tab, no 401 errors.
+  // Download: navigate the browser directly to our /download endpoint.
+  // The backend validates JWT, then 302-redirects to the Cloudinary fl_attachment
+  // URL. The browser can access Cloudinary (200); our server cannot (CDN 401).
+  // Content-Disposition: attachment from Cloudinary triggers a file save with
+  // NO new tab — the current page stays in place.
   const [isDownloading, setIsDownloading] = useState(false);
   const handleDownloadNotes = useCallback(async (notesUrl: string) => {
     setIsDownloading(true);
     try {
-      // Call our backend proxy — it fetches Cloudinary server-side and streams
-      // the file back with the correct download headers.
-      const response = await api.get('/upload/download', {
-        params: { url: notesUrl },
-        responseType: 'blob',
-      });
+      // Build the backend download URL (includes JWT so authMiddleware passes)
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token') || '';
+      const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api')
+        .replace(/\/api\/?$/, '');
+      const endpointUrl =
+        `${apiBase}/api/upload/download` +
+        `?url=${encodeURIComponent(notesUrl)}` +
+        `&token=${encodeURIComponent(token)}`;
 
-      const blob = new Blob([response.data]);
-      const blobUrl = URL.createObjectURL(blob);
-
-      // Derive filename from the original URL
-      const parts = notesUrl.split('/');
-      const filename = parts[parts.length - 1]?.split('?')[0] || 'lecture-notes.pdf';
-
+      // Programmatic anchor click: browser navigates to the endpoint,
+      // which 302-redirects to Cloudinary fl_attachment URL → file download.
       const link = document.createElement('a');
-      link.href = blobUrl;
-      link.download = filename;
+      link.href = endpointUrl;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
 
       await updateProgressTracking('notes');
     } catch (err) {
