@@ -80,28 +80,30 @@ const LearningPlayer: React.FC = () => {
       }
   };
 
-  // Programmatic download: fetch as blob → local objectURL → click.
-  // Required because the HTML `download` attribute is silently ignored by
-  // browsers for cross-origin URLs (e.g. Cloudinary), causing the PDF to
-  // open in a new tab instead of downloading.
+  // Proxy download: the backend streams the Cloudinary file server-to-server
+  // (no CORS) with Content-Disposition: attachment, so the browser always
+  // saves the file locally — no new tab, no 401 errors.
   const [isDownloading, setIsDownloading] = useState(false);
   const handleDownloadNotes = useCallback(async (notesUrl: string) => {
     setIsDownloading(true);
     try {
-      const rawUrl = notesUrl.startsWith('http')
-        ? notesUrl
-        : `${API_BASE}${notesUrl.startsWith('/') ? '' : '/'}${notesUrl}`;
+      // Call our backend proxy — it fetches Cloudinary server-side and streams
+      // the file back with the correct download headers.
+      const response = await api.get('/upload/download', {
+        params: { url: notesUrl },
+        responseType: 'blob',
+      });
 
-      const response = await fetch(rawUrl);
-      if (!response.ok) throw new Error('Failed to fetch file');
-      const blob = await response.blob();
+      const blob = new Blob([response.data]);
       const blobUrl = URL.createObjectURL(blob);
+
+      // Derive filename from the original URL
+      const parts = notesUrl.split('/');
+      const filename = parts[parts.length - 1]?.split('?')[0] || 'lecture-notes.pdf';
 
       const link = document.createElement('a');
       link.href = blobUrl;
-      // Derive filename from URL, fallback to 'lecture-notes.pdf'
-      const parts = rawUrl.split('/');
-      link.download = parts[parts.length - 1]?.split('?')[0] || 'lecture-notes.pdf';
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -109,9 +111,8 @@ const LearningPlayer: React.FC = () => {
 
       await updateProgressTracking('notes');
     } catch (err) {
-      console.error('Download failed, falling back to new tab', err);
-      // Fallback: open in new tab so the user can at least access the file
-      window.open(notesUrl, '_blank', 'noopener,noreferrer');
+      console.error('Download failed:', err);
+      alert('Could not download the file. Please try again.');
     } finally {
       setIsDownloading(false);
     }
@@ -267,26 +268,54 @@ const LearningPlayer: React.FC = () => {
                         </div>
                     )}
 
-                                        {activeSubTab === 'notes' && (
-                        <div style={{ padding: '8rem 2rem', textAlign: 'center', background: 'hsl(var(--color-surface))', height: '100%' }}>
-                            <h3 style={{ marginBottom: '1rem', fontSize: '1.75rem' }}>Download Reference Material</h3>
-                            <p style={{ color: 'hsl(var(--text-secondary))', marginBottom: '3rem', fontSize: '1.15rem' }}>Detailed instructor materials and PDF notes for this specific lesson.</p>
-                            
-                            {activeLesson.notesUrl ? (
-                                <button
-                                    onClick={() => handleDownloadNotes(activeLesson.notesUrl)}
-                                    disabled={isDownloading}
-                                    className="btn btn-primary"
-                                    style={{ padding: '1.25rem 4rem', fontSize: '1.25rem', display: 'inline-flex', alignItems: 'center', gap: '0.75rem', cursor: isDownloading ? 'wait' : 'pointer' }}
-                                >
-                                    <FileText size={24} />
-                                    {isDownloading ? 'Downloading...' : 'Download Notes'}
-                                </button>
-                            ) : (
-                                <p style={{ color: 'hsl(var(--color-danger))', fontSize: '1.1rem' }}>No documents attached yet.</p>
-                            )}
-                        </div>
-                    )}
+                                        {activeSubTab === 'notes' && (() => {
+                        if (!activeLesson.notesUrl) {
+                            return (
+                                <div style={{ padding: '8rem 2rem', textAlign: 'center', background: 'hsl(var(--color-surface))' }}>
+                                    <FileText size={64} style={{ opacity: 0.3, margin: '0 auto 1.5rem auto' }} />
+                                    <p style={{ color: 'hsl(var(--color-danger))', fontSize: '1.1rem' }}>No documents attached to this lesson yet.</p>
+                                </div>
+                            );
+                        }
+
+                        const rawNotesUrl = activeLesson.notesUrl.startsWith('http')
+                            ? activeLesson.notesUrl
+                            : `${API_BASE}${activeLesson.notesUrl.startsWith('/') ? '' : '/'}${activeLesson.notesUrl}`;
+
+                        // Google Docs Viewer renders the PDF on Google's servers —
+                        // no CORS, no 401, works for any publicly reachable URL.
+                        const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(rawNotesUrl)}&embedded=true`;
+
+                        return (
+                            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                                {/* Toolbar */}
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.5rem', borderBottom: '1px solid hsla(var(--color-border), 0.4)', background: 'hsl(var(--color-surface))' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                        <FileText size={22} color="hsl(var(--color-primary))" />
+                                        <span style={{ fontWeight: 600, fontSize: '1rem' }}>Lecture Notes</span>
+                                    </div>
+                                    <button
+                                        onClick={() => handleDownloadNotes(rawNotesUrl)}
+                                        disabled={isDownloading}
+                                        className="btn btn-primary"
+                                        style={{ padding: '0.6rem 1.5rem', fontSize: '0.95rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', cursor: isDownloading ? 'wait' : 'pointer' }}
+                                    >
+                                        <FileText size={16} />
+                                        {isDownloading ? 'Downloading...' : 'Download PDF'}
+                                    </button>
+                                </div>
+
+                                {/* PDF Viewer */}
+                                <iframe
+                                    src={viewerUrl}
+                                    title="Lecture Notes"
+                                    style={{ flex: 1, width: '100%', minHeight: '600px', border: 'none', background: '#fff' }}
+                                    onLoad={() => updateProgressTracking('notes')}
+                                />
+                            </div>
+                        );
+                    })()}
+
 
                                         {activeSubTab === 'assignment' && (
                         <div style={{ padding: '4rem', background: 'hsl(var(--color-surface))', height: '100%' }}>
