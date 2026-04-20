@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { PlayCircle, FileText, CheckCircle, HelpCircle } from 'lucide-react';
 import api from '../api/axios';
@@ -79,6 +79,44 @@ const LearningPlayer: React.FC = () => {
           console.error("Failed tracking internal progress", err);
       }
   };
+
+  // Programmatic download: fetch as blob → local objectURL → click.
+  // Required because the HTML `download` attribute is silently ignored by
+  // browsers for cross-origin URLs (e.g. Cloudinary), causing the PDF to
+  // open in a new tab instead of downloading.
+  const [isDownloading, setIsDownloading] = useState(false);
+  const handleDownloadNotes = useCallback(async (notesUrl: string) => {
+    setIsDownloading(true);
+    try {
+      const rawUrl = notesUrl.startsWith('http')
+        ? notesUrl
+        : `${API_BASE}${notesUrl.startsWith('/') ? '' : '/'}${notesUrl}`;
+
+      const response = await fetch(rawUrl);
+      if (!response.ok) throw new Error('Failed to fetch file');
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      // Derive filename from URL, fallback to 'lecture-notes.pdf'
+      const parts = rawUrl.split('/');
+      link.download = parts[parts.length - 1]?.split('?')[0] || 'lecture-notes.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+
+      await updateProgressTracking('notes');
+    } catch (err) {
+      console.error('Download failed, falling back to new tab', err);
+      // Fallback: open in new tab so the user can at least access the file
+      window.open(notesUrl, '_blank', 'noopener,noreferrer');
+    } finally {
+      setIsDownloading(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeLesson, courseId]);
 
   const isLessonCompleted = (lessonId: string) => {
       if (!enrollment || !enrollment.progressTracking) return false;
@@ -235,31 +273,15 @@ const LearningPlayer: React.FC = () => {
                             <p style={{ color: 'hsl(var(--text-secondary))', marginBottom: '3rem', fontSize: '1.15rem' }}>Detailed instructor materials and PDF notes for this specific lesson.</p>
                             
                             {activeLesson.notesUrl ? (
-                                (() => {
-                                    // Build the base URL
-                                    const rawUrl = activeLesson.notesUrl.startsWith('http')
-                                        ? activeLesson.notesUrl
-                                        : `${API_BASE}${activeLesson.notesUrl.startsWith('/') ? '' : '/'}${activeLesson.notesUrl}`;
-
-                                    // For Cloudinary URLs, inject fl_attachment to force file download
-                                    // instead of opening inline in the browser tab.
-                                    // Cloudinary URL pattern: https://res.cloudinary.com/<cloud>/image/upload/<transformations>/<public_id>
-                                    const downloadUrl = rawUrl.includes('cloudinary.com')
-                                        ? rawUrl.replace('/upload/', '/upload/fl_attachment/')
-                                        : rawUrl;
-                                        
-                                    return (
-                                        <a
-                                            href={downloadUrl}
-                                            onClick={() => updateProgressTracking('notes')}
-                                            download
-                                            className="btn btn-primary"
-                                            style={{ padding: '1.25rem 4rem', fontSize: '1.25rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}
-                                        >
-                                            <FileText size={24} /> Download Notes
-                                        </a>
-                                    );
-                                })()
+                                <button
+                                    onClick={() => handleDownloadNotes(activeLesson.notesUrl)}
+                                    disabled={isDownloading}
+                                    className="btn btn-primary"
+                                    style={{ padding: '1.25rem 4rem', fontSize: '1.25rem', display: 'inline-flex', alignItems: 'center', gap: '0.75rem', cursor: isDownloading ? 'wait' : 'pointer' }}
+                                >
+                                    <FileText size={24} />
+                                    {isDownloading ? 'Downloading...' : 'Download Notes'}
+                                </button>
                             ) : (
                                 <p style={{ color: 'hsl(var(--color-danger))', fontSize: '1.1rem' }}>No documents attached yet.</p>
                             )}
