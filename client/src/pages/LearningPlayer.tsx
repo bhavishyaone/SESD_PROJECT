@@ -252,8 +252,6 @@ const LearningPlayer: React.FC = () => {
                                         <a
                                             href={downloadUrl}
                                             onClick={() => updateProgressTracking('notes')}
-                                            target="_blank"
-                                            rel="noreferrer"
                                             download
                                             className="btn btn-primary"
                                             style={{ padding: '1.25rem 4rem', fontSize: '1.25rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}
