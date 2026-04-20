@@ -27,7 +27,27 @@ class App {
   }
 
   private initializeMiddlewares() {
-    this.app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
+    // Support multiple CLIENT_URL values (comma-separated) or a wildcard for dev.
+    // This handles cases where Vercel may serve under preview URLs.
+    const rawClientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+    const allowedOrigins = rawClientUrl.split(',').map((u) => u.trim().replace(/\/$/, ''));
+
+    this.app.use(
+      cors({
+        origin: (origin, callback) => {
+          // Allow requests with no origin (mobile apps, curl, Postman, server-to-server)
+          if (!origin) return callback(null, true);
+          const normalized = origin.replace(/\/$/, '');
+          if (allowedOrigins.includes(normalized)) {
+            callback(null, true);
+          } else {
+            console.warn(`[CORS] Blocked origin: ${origin}`);
+            callback(new Error(`CORS: Origin not allowed — ${origin}`));
+          }
+        },
+        credentials: true,
+      })
+    );
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

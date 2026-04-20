@@ -236,10 +236,28 @@ const LearningPlayer: React.FC = () => {
                             
                             {activeLesson.notesUrl ? (
                                 (() => {
-                                    const rawUrl = activeLesson.notesUrl.startsWith('http') ? activeLesson.notesUrl : `${API_BASE}${activeLesson.notesUrl.startsWith('/') ? '' : '/'}${activeLesson.notesUrl}`;
+                                    // Build the base URL
+                                    const rawUrl = activeLesson.notesUrl.startsWith('http')
+                                        ? activeLesson.notesUrl
+                                        : `${API_BASE}${activeLesson.notesUrl.startsWith('/') ? '' : '/'}${activeLesson.notesUrl}`;
+
+                                    // For Cloudinary URLs, inject fl_attachment to force file download
+                                    // instead of opening inline in the browser tab.
+                                    // Cloudinary URL pattern: https://res.cloudinary.com/<cloud>/image/upload/<transformations>/<public_id>
+                                    const downloadUrl = rawUrl.includes('cloudinary.com')
+                                        ? rawUrl.replace('/upload/', '/upload/fl_attachment/')
+                                        : rawUrl;
                                         
                                     return (
-                                        <a href={rawUrl} onClick={() => updateProgressTracking('notes')} target="_blank" rel="noreferrer" className="btn btn-primary" style={{ padding: '1.25rem 4rem', fontSize: '1.25rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}>
+                                        <a
+                                            href={downloadUrl}
+                                            onClick={() => updateProgressTracking('notes')}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            download
+                                            className="btn btn-primary"
+                                            style={{ padding: '1.25rem 4rem', fontSize: '1.25rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}
+                                        >
                                             <FileText size={24} /> Download Notes
                                         </a>
                                     );
