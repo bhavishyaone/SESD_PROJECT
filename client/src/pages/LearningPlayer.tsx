@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom';
 import { PlayCircle, FileText, CheckCircle, HelpCircle } from 'lucide-react';
 import api from '../api/axios';
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL 
+  ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '') 
+  : 'http://localhost:5000';
 
 const LearningPlayer: React.FC = () => {
   const { id: courseId } = useParams<{ id: string }>();
