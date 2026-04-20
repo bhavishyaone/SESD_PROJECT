@@ -209,7 +209,7 @@ const LearningPlayer: React.FC = () => {
                             {activeLesson.videoUrl ? (
                                 <video 
                                     controls 
-                                    src={`${API_BASE}${activeLesson.videoUrl}`} 
+                                    src={activeLesson.videoUrl.startsWith('http') ? activeLesson.videoUrl : `${API_BASE}${activeLesson.videoUrl.startsWith('/') ? '' : '/'}${activeLesson.videoUrl}`} 
                                     style={{ width: '100%', aspectRatio: '16/9', background: '#000' }}
                                     onEnded={() => updateProgressTracking('video')}
                                 />
@@ -235,7 +235,7 @@ const LearningPlayer: React.FC = () => {
                             <p style={{ color: 'hsl(var(--text-secondary))', marginBottom: '3rem', fontSize: '1.15rem' }}>Detailed instructor materials and PDF notes for this specific lesson.</p>
                             
                             {activeLesson.notesUrl ? (
-                                <a href={`${API_BASE}${activeLesson.notesUrl}`} onClick={() => updateProgressTracking('notes')} download target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
+                                <a href={activeLesson.notesUrl.startsWith('http') ? activeLesson.notesUrl : `${API_BASE}${activeLesson.notesUrl.startsWith('/') ? '' : '/'}${activeLesson.notesUrl}`} onClick={() => updateProgressTracking('notes')} download target="_blank" rel="noreferrer" style={{textDecoration: 'none'}}>
                                     <button className="btn btn-primary" style={{ padding: '1.25rem 4rem', fontSize: '1.25rem' }}>
                                         <FileText size={24} /> Download Notes
                                     </button>
