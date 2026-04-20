@@ -237,13 +237,9 @@ const LearningPlayer: React.FC = () => {
                             {activeLesson.notesUrl ? (
                                 (() => {
                                     const rawUrl = activeLesson.notesUrl.startsWith('http') ? activeLesson.notesUrl : `${API_BASE}${activeLesson.notesUrl.startsWith('/') ? '' : '/'}${activeLesson.notesUrl}`;
-                                    // Try to force attachment download for Cloudinary URLs
-                                    const downloadUrl = rawUrl.includes('/upload/') && rawUrl.includes('cloudinary') 
-                                        ? rawUrl.replace('/upload/', '/upload/fl_attachment/') 
-                                        : rawUrl;
                                         
                                     return (
-                                        <a href={downloadUrl} onClick={() => updateProgressTracking('notes')} target="_blank" rel="noreferrer" className="btn btn-primary" style={{ padding: '1.25rem 4rem', fontSize: '1.25rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}>
+                                        <a href={rawUrl} onClick={() => updateProgressTracking('notes')} target="_blank" rel="noreferrer" className="btn btn-primary" style={{ padding: '1.25rem 4rem', fontSize: '1.25rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem' }}>
                                             <FileText size={24} /> Download Notes
                                         </a>
                                     );
