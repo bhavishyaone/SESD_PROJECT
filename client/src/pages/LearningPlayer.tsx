@@ -282,9 +282,14 @@ const LearningPlayer: React.FC = () => {
                             ? activeLesson.notesUrl
                             : `${API_BASE}${activeLesson.notesUrl.startsWith('/') ? '' : '/'}${activeLesson.notesUrl}`;
 
-                        // Google Docs Viewer renders the PDF on Google's servers —
-                        // no CORS, no 401, works for any publicly reachable URL.
-                        const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(rawNotesUrl)}&embedded=true`;
+                        // Use our own backend as a proxy for BOTH view and download.
+                        // The server fetches Cloudinary with fl_attachment (required for raw
+                        // resources to bypass 401), then sets Content-Disposition itself:
+                        //   /view  → inline  (iframe renders the PDF)
+                        //   /download → attachment (browser saves the file)
+                        const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api')
+                            .replace(/\/api\/?$/, '');
+                        const viewUrl = `${apiBase}/api/upload/view?url=${encodeURIComponent(rawNotesUrl)}`;
 
                         return (
                             <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -305,16 +310,17 @@ const LearningPlayer: React.FC = () => {
                                     </button>
                                 </div>
 
-                                {/* PDF Viewer */}
+                                {/* PDF Viewer — served via backend proxy (inline disposition) */}
                                 <iframe
-                                    src={viewerUrl}
+                                    src={viewUrl}
                                     title="Lecture Notes"
-                                    style={{ flex: 1, width: '100%', minHeight: '600px', border: 'none', background: '#fff' }}
+                                    style={{ flex: 1, width: '100%', minHeight: '600px', border: 'none', background: '#525659' }}
                                     onLoad={() => updateProgressTracking('notes')}
                                 />
                             </div>
                         );
                     })()}
+
 
 
                                         {activeSubTab === 'assignment' && (
