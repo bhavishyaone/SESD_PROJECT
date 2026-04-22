@@ -12,7 +12,7 @@ Academix is a structured, role-based **Learning Management System (LMS)** design
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 ### Frontend Architecture
 - **Framework:** React 19 + TypeScript
@@ -31,7 +31,7 @@ Academix is a structured, role-based **Learning Management System (LMS)** design
 
 ---
 
-## 🏗️ Project Structure
+## Project Structure
 
 The repository is composed of two main workspaces (`client` and `server`):
 
@@ -57,17 +57,17 @@ SESD_PROJECT/
 
 ---
 
-## 👥 User Roles & Responsibilities
+## User Roles & Responsibilities
 
 | Role | Responsibilities |
 |------|----------------|
-| **🎓 Student** | Browse the course catalog, enroll in courses, view video lessons, submit assignments, track learning progress, and download completion certificates. |
-| **👩‍🏫 Instructor** | Create and publish interactive courses, manage modules/lessons, review and grade student assignment submissions, and track course analytics. |
-| **🛡️ Admin** | Manage platform users, approve/moderate courses, and monitor overall platform health. |
+| **Student** | Browse the course catalog, enroll in courses, view video lessons, submit assignments, track learning progress, and download completion certificates. |
+| **Instructor** | Create and publish interactive courses, manage modules/lessons, review and grade student assignment submissions, and track course analytics. |
+| **Admin** | Manage platform users, approve/moderate courses, and monitor overall platform health. |
 
 ---
 
-## ✨ Core Features
+## Core Features
 
 - **Robust User Management** — Secure authentication with JWT, role-based access control (RBAC), and dynamic user profiles.
 - **Comprehensive Course Management** — Intuitive course creation tool for instructors, structured modular hierarchy (Course → Module → Lesson), and drafting/publishing workflows.
@@ -78,7 +78,7 @@ SESD_PROJECT/
 
 ---
 
-## ⚙️ Backend Design Patterns
+## Backend Design Patterns
 
 The backend follows a strict **class-based layered architecture** to ensure maintainability and scalability:
 
@@ -94,7 +94,7 @@ Controller → Service → Repository → Model (Mongoose)
 
 ---
 
-## 🛠️ Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
@@ -143,6 +143,6 @@ The application should now be accessible at `http://localhost:5173`.
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
